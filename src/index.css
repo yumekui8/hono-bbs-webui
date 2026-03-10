@@ -1,0 +1,29 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ページ背景カラーの CSS 変数 */
+:root {
+  --bg-page: #ffffff;
+}
+.dark {
+  --bg-page: #030712; /* gray-950 */
+}
+.dark.dark-gray {
+  --bg-page: #111827; /* gray-900 */
+}
+.light-gray {
+  --bg-page: #f3f4f6; /* gray-100 */
+}
+
+/* Popup animations */
+@keyframes popup-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes popup-fade-out {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+.popup-fade-in  { animation: popup-fade-in  0.15s ease-out; }
+.popup-fade-out { animation: popup-fade-out 0.15s ease-out forwards; }
