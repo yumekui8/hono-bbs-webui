@@ -12,7 +12,7 @@ export type KebabMenuItem =
 const THEME_OPTIONS: { value: Theme; label: string }[] = [
   { value: "light",      label: "ライト" },
   { value: "dark",       label: "ダーク" },
-  { value: "dark-gray",  label: "ダークグレー" },
+  { value: "gray",       label: "グレー" },
   { value: "light-gray", label: "ライトグレー" },
   { value: "system",     label: "システム" },
 ];
@@ -36,18 +36,18 @@ export function KebabMenu({ items }: KebabMenuProps) {
   }, [open]);
 
   return (
-    <div ref={ref} className="relative shrink-0">
+    <div ref={ref} className="relative self-stretch flex items-stretch shrink-0">
       <button
         type="button"
         onClick={() => setOpen(o => !o)}
-        className="w-8 h-8 flex items-center justify-center text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 rounded transition-colors text-xl leading-none select-none"
+        className="h-full px-3 flex items-center justify-center text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors text-xl leading-none select-none"
         aria-label="メニュー"
       >
         ⋮
       </button>
 
       {open && (
-        <div className="absolute left-0 top-full mt-1 min-w-44 bg-[var(--bg-page)] border border-gray-200 dark:border-gray-700 shadow-lg z-[60] py-1">
+        <div className="absolute right-0 top-full mt-0 min-w-44 bg-[var(--bg-surface)] border border-gray-200 dark:border-gray-700 shadow-lg z-[60] py-1">
           {items.map((item, i) => {
             if (item.type === "divider") {
               return <div key={i} className="my-1 border-t border-gray-100 dark:border-gray-800" />;
@@ -57,7 +57,7 @@ export function KebabMenu({ items }: KebabMenuProps) {
                 <Link
                   key={i}
                   to={item.to}
-                  className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                  className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/10 transition-colors"
                   onClick={() => setOpen(false)}
                 >
                   {item.label}
@@ -69,7 +69,7 @@ export function KebabMenu({ items }: KebabMenuProps) {
                 <button
                   key={i}
                   type="button"
-                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/10 transition-colors"
                   onClick={() => { item.onClick(); setOpen(false); }}
                 >
                   {item.label}
@@ -84,7 +84,7 @@ export function KebabMenu({ items }: KebabMenuProps) {
                     <button
                       key={opt.value}
                       type="button"
-                      className="flex items-center gap-2 w-full text-left px-4 py-1.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                      className="flex items-center gap-2 w-full text-left px-4 py-1.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/10 transition-colors"
                       onClick={() => { setTheme(opt.value); setOpen(false); }}
                     >
                       <span className={`text-xs w-3 shrink-0 ${theme === opt.value ? "text-blue-500" : "opacity-0"}`}>✓</span>

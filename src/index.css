@@ -2,28 +2,32 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* ページ背景カラーの CSS 変数 */
+/* ── テーマ別 CSS 変数 ─────────────────────────────── */
+
+/* light (デフォルト) */
 :root {
-  --bg-page: #ffffff;
-}
-.dark {
-  --bg-page: #030712; /* gray-950 */
-}
-.dark.dark-gray {
-  --bg-page: #111827; /* gray-900 */
-}
-.light-gray {
-  --bg-page: #f3f4f6; /* gray-100 */
+  --bg-surface: #ffffff;    /* ヘッダ・フッタ・パネル */
+  --bg-page:    #f3f4f6;    /* コンテンツ背景（やや濃い） */
+  --link-color: #1e40af;    /* ナビリンク色（青系） */
 }
 
-/* Popup animations */
-@keyframes popup-fade-in {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+/* dark（旧 dark-gray） */
+.dark {
+  --bg-surface: #1f2937;    /* gray-800 */
+  --bg-page:    #111827;    /* gray-900 */
+  --link-color: #7dd3fc;    /* sky-300（薄い水色） */
 }
-@keyframes popup-fade-out {
-  from { opacity: 1; }
-  to   { opacity: 0; }
+
+/* gray（新規） */
+.dark.gray {
+  --bg-surface: #374151;    /* gray-700 */
+  --bg-page:    #1f2937;    /* gray-800 */
+  --link-color: #bae6fd;    /* sky-200 */
 }
-.popup-fade-in  { animation: popup-fade-in  0.15s ease-out; }
-.popup-fade-out { animation: popup-fade-out 0.15s ease-out forwards; }
+
+/* light-gray */
+.light-gray {
+  --bg-surface: #f3f4f6;    /* gray-100 */
+  --bg-page:    #e5e7eb;    /* gray-200 */
+  --link-color: #1d4ed8;    /* blue-700 */
+}

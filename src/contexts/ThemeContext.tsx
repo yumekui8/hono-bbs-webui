@@ -1,8 +1,12 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { getCookie, setCookie } from "../utils/cookies";
 
-export type Theme = "light" | "dark" | "dark-gray" | "light-gray" | "system";
-export type ResolvedTheme = "light" | "dark" | "dark-gray" | "light-gray";
+export type Theme = "light" | "dark" | "gray" | "light-gray" | "system";
+export type ResolvedTheme = "light" | "dark" | "gray" | "light-gray";
+
+export function isDarkTheme(t: ResolvedTheme): boolean {
+  return t === "dark" || t === "gray";
+}
 
 interface ThemeContextValue {
   theme: Theme;
@@ -14,7 +18,10 @@ const ThemeContext = createContext<ThemeContextValue | null>(null);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setThemeState] = useState<Theme>(() => {
-    return (getCookie("theme") as Theme) ?? "system";
+    const stored = getCookie("theme") as Theme | null;
+    // migrate old "dark-gray" → "dark"
+    if (stored === ("dark-gray" as Theme)) return "dark";
+    return stored ?? "system";
   });
 
   const [resolvedTheme, setResolvedTheme] = useState<ResolvedTheme>("light");
@@ -30,9 +37,9 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     const update = () => {
       const resolved = resolve();
       setResolvedTheme(resolved);
-      const isDark = resolved === "dark" || resolved === "dark-gray";
-      document.documentElement.classList.toggle("dark", isDark);
-      document.documentElement.classList.toggle("dark-gray", resolved === "dark-gray");
+      const dark = isDarkTheme(resolved);
+      document.documentElement.classList.toggle("dark", dark);
+      document.documentElement.classList.toggle("gray", resolved === "gray");
       document.documentElement.classList.toggle("light-gray", resolved === "light-gray");
     };
 

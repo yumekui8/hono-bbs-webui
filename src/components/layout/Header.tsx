@@ -11,7 +11,7 @@ function ThemeToggle() {
     else setTheme("light");
   };
 
-  const icon = resolvedTheme === "dark" || resolvedTheme === "dark-gray" ? "🌙" : "☀️";
+  const icon = resolvedTheme === "dark" || resolvedTheme === "gray" ? "🌙" : "☀️";
 
   return (
     <button
@@ -44,7 +44,7 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-gray-200 dark:border-gray-800 bg-[var(--bg-page)]">
-      <div className="max-w-3xl mx-auto px-4 h-12 flex items-center justify-between gap-4">
+      <div className="max-w-[82rem] mx-auto px-4 h-12 flex items-center justify-between gap-4">
         <Link
           to="/"
           className="font-semibold text-gray-900 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"

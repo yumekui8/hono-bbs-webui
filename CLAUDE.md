@@ -17,16 +17,7 @@ JAMスタックで開発し、Cloudflare Pages にデプロイする。
 
 ## API仕様
 
-バックエンドAPIの仕様は `docs/api.md` を参照。
-
-主なエンドポイント:
-- `POST /auth/turnstile` — Turnstile セッション取得
-- `POST /auth/signin` / `POST /auth/signup` / `POST /auth/logout` — 認証
-- `GET /boards/` — 板一覧
-- `GET /boards/:boardId/threads/` — スレッド一覧
-- `GET /boards/:boardId/threads/:threadId` — スレッド詳細 + 投稿一覧
-- `POST /boards/:boardId/threads/` — スレッド作成
-- `POST /boards/:boardId/threads/:threadId/posts/` — 投稿
+バックエンドAPIの仕様は `docs/endpoints/*` を参照。
 
 ## 認証・セッション仕様
 

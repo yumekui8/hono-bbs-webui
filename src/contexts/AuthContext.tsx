@@ -105,7 +105,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const updatePassword = async (data: { currentPassword: string; newPassword: string }) => {
     if (!auth.sessionId) throw new Error("ログインが必要です");
     const ts = requireTurnstile();
-    const user = await authApi.updatePassword(data, auth.sessionId, ts);
+    const user = await authApi.updateProfile(data, auth.sessionId, ts);
     setIdentityUser(user);
   };
 

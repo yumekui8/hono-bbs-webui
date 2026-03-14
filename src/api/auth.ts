@@ -18,14 +18,14 @@ export const authApi = {
     apiClient.get<IdentityUser>("/profile", { sessionId }),
 
   updateProfile: (
-    data: { displayName?: string; bio?: string | null; email?: string | null },
+    data: {
+      displayName?: string;
+      bio?: string | null;
+      email?: string | null;
+      currentPassword?: string;
+      newPassword?: string;
+    },
     sessionId: string,
     turnstileSession: string,
   ) => apiClient.put<IdentityUser>("/profile", data, { sessionId, turnstileSession }),
-
-  updatePassword: (
-    data: { currentPassword: string; newPassword: string },
-    sessionId: string,
-    turnstileSession: string,
-  ) => apiClient.put<IdentityUser>("/profile/password", data, { sessionId, turnstileSession }),
 };

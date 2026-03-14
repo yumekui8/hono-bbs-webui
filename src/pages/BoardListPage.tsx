@@ -7,12 +7,17 @@ import { ErrorMessage } from "../components/ui/ErrorMessage";
 import { KebabMenu } from "../components/ui/KebabMenu";
 import type { KebabMenuItem } from "../components/ui/KebabMenu";
 import { useAuth } from "../contexts/AuthContext";
+import { useTheme, isDarkTheme } from "../contexts/ThemeContext";
+
+const FOOTER_H = 56;
 
 export function BoardListPage() {
   const [boards, setBoards] = useState<Board[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { isLoggedIn, logout } = useAuth();
+  const { resolvedTheme } = useTheme();
+  const reloadIcon = isDarkTheme(resolvedTheme) ? "/reload_dark.svg" : "/reload_light.svg";
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -40,16 +45,11 @@ export function BoardListPage() {
   return (
     <div>
       {/* スティッキーサブヘッダー */}
-      <div className="sticky top-0 z-40 -mt-8 sm:-mx-4 sm:px-4 py-2 bg-[var(--bg-page)] border-b border-gray-200 dark:border-gray-800 mb-6">
-        <div className="flex items-center gap-2">
-          <KebabMenu items={menuItems} />
-          <div className="flex-1 min-w-0">
-            <nav className="text-xs text-gray-400 dark:text-gray-500 flex items-center gap-1 mb-0.5">
-              <Link to="/" className="hover:text-gray-600 dark:hover:text-gray-300">トップ</Link>
-            </nav>
-            <p className="text-sm font-medium">板一覧</p>
-          </div>
+      <div className="sticky top-0 z-40 -mt-8 sm:-mx-4 flex items-stretch bg-[var(--bg-surface)] border-b border-gray-200 dark:border-gray-700">
+        <div className="flex-1 px-3 sm:px-4 py-3 min-w-0">
+          <p className="text-sm leading-snug">板一覧</p>
         </div>
+        <KebabMenu items={menuItems} />
       </div>
 
       {loading && <Loading />}
@@ -60,12 +60,12 @@ export function BoardListPage() {
         </p>
       )}
       {!loading && !error && boards.length > 0 && (
-        <div className="border border-gray-200 dark:border-gray-800 divide-y divide-gray-100 dark:divide-gray-800">
+        <div className="border border-gray-200 dark:border-gray-800 divide-y divide-gray-100 dark:divide-gray-800" style={{ marginBottom: FOOTER_H }}>
           {boards.map((board) => (
             <Link
               key={board.id}
               to={`/boards/${board.id}`}
-              className="flex items-center justify-between px-4 py-4 hover:bg-gray-50 dark:hover:bg-gray-900/50 transition-colors"
+              className="flex items-center justify-between px-4 py-4 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
             >
               <div className="min-w-0 space-y-0.5">
                 <p className="text-sm font-medium">{board.name}</p>
@@ -78,6 +78,23 @@ export function BoardListPage() {
           ))}
         </div>
       )}
+
+      {/* 固定フッター */}
+      <div
+        className="fixed bottom-0 inset-x-0 z-40 bg-[var(--bg-surface)] border-t border-gray-200 dark:border-gray-700"
+        style={{ height: FOOTER_H }}
+      >
+        <div className="max-w-[82rem] mx-auto px-4 h-full flex items-center justify-end">
+          <button
+            type="button"
+            onClick={load}
+            className="w-10 h-10 flex items-center justify-center hover:bg-gray-100 dark:hover:bg-white/10 rounded transition-colors"
+            aria-label="更新"
+          >
+            <img src={reloadIcon} alt="" className="w-6 h-6" />
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
