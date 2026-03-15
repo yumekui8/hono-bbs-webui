@@ -40,7 +40,7 @@ export function KebabMenu({ items }: KebabMenuProps) {
       <button
         type="button"
         onClick={() => setOpen(o => !o)}
-        className="h-full px-3 flex items-center justify-center text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors text-xl leading-none select-none"
+        className="h-full px-4 sm:px-3 flex items-center justify-center text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors text-2xl sm:text-xl leading-none select-none min-w-[3rem] sm:min-w-0"
         aria-label="メニュー"
       >
         ⋮

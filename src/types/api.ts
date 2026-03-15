@@ -69,6 +69,7 @@ export interface Board {
   defaultThreadOwnerUserId: string | null;
   defaultThreadOwnerGroupId: string | null;
   defaultThreadPermissions: string;
+  category: string | null;
   createdAt: string;
 }
 

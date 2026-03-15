@@ -10,6 +10,13 @@ lerna-debug.log*
 node_modules
 dist
 dist-ssr
+
+# 環境変数ファイル（.env.example のみコミット可）
+.env
+.env.local
+.env.*.local
+.env.production
+.env.staging
 *.local
 
 # Editor directories and files

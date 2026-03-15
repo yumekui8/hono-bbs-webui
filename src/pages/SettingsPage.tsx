@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
 import { useTheme, type Theme } from "../contexts/ThemeContext";
 import { useAuth } from "../contexts/AuthContext";
-import { useSettings, type GestureSensitivity } from "../contexts/SettingsContext";
+import { useSettings, type GestureSensitivity, type FontSize } from "../contexts/SettingsContext";
 import { Button } from "../components/ui/Button";
 import { ApiRequestError } from "../api/client";
+import { KebabMenu } from "../components/ui/KebabMenu";
+import type { KebabMenuItem } from "../components/ui/KebabMenu";
+import { PCHeaderLeft } from "../components/layout/PCHeaderLeft";
 
 const inputClass = "w-full px-3 py-2 text-sm border border-gray-200 dark:border-gray-700 bg-[var(--bg-surface)] focus:outline-none focus:border-blue-500 dark:focus:border-blue-400 transition-colors";
 const textareaClass = `${inputClass} resize-y`;
@@ -31,14 +34,17 @@ export function SettingsPage() {
   const { theme, setTheme } = useTheme();
   const {
     turnstileSession, setTurnstileSession, clearTurnstileSession,
-    isLoggedIn, userId, identityUser, updateProfile, updatePassword, refreshIdentityUser,
+    isLoggedIn, userId, identityUser, updateProfile, updatePassword, refreshIdentityUser, logout,
   } = useAuth();
   const {
-    defaultPosterName, setDefaultPosterName,
-    defaultPosterSubInfo, setDefaultPosterSubInfo,
+    defaultPosterName,
+    defaultPosterSubInfo,
+    setPosterDefaults,
     historyMaxCount, setHistoryMaxCount,
-    ng, updateNG,
+    ng,
+    saveAllNG,
     gestureSensitivity, setGestureSensitivity,
+    fontSize, setFontSize,
   } = useSettings();
 
   // Turnstile
@@ -146,8 +152,7 @@ export function SettingsPage() {
 
   const savePosterDefaults = (e: React.FormEvent) => {
     e.preventDefault();
-    setDefaultPosterName(draftPosterName);
-    setDefaultPosterSubInfo(draftPosterSubInfo);
+    setPosterDefaults(draftPosterName, draftPosterSubInfo);
     setPosterNameSaved(true);
     setTimeout(() => setPosterNameSaved(false), 2000);
   };
@@ -159,10 +164,7 @@ export function SettingsPage() {
 
   const saveNG = (e: React.FormEvent) => {
     e.preventDefault();
-    updateNG("id",    draftNG.id);
-    updateNG("name",  draftNG.name);
-    updateNG("body",  draftNG.body);
-    updateNG("title", draftNG.title);
+    saveAllNG(draftNG);
     setNgSaved(true);
     setTimeout(() => setNgSaved(false), 2000);
   };
@@ -175,10 +177,34 @@ export function SettingsPage() {
     { value: "system",     label: "システム",     desc: "OS の設定に従う" },
   ];
 
-  return (
-    <div className="max-w-lg space-y-10">
-      <h1 className="text-xl font-semibold">設定</h1>
+  const fontSizeOptions: { value: FontSize; label: string; desc: string }[] = [
+    { value: "small",  label: "小",   desc: "13px" },
+    { value: "medium", label: "中",   desc: "15px（標準）" },
+    { value: "large",  label: "大",   desc: "17px" },
+    { value: "xlarge", label: "特大", desc: "19px" },
+  ];
 
+  const menuItems: KebabMenuItem[] = [
+    { type: "theme" },
+    { type: "divider" },
+    { type: "link", label: "板一覧", to: "/boards" },
+    ...(isLoggedIn
+      ? [{ type: "action" as const, label: "ログアウト", onClick: logout }]
+      : [{ type: "link" as const, label: "ログイン", to: "/login" }]),
+  ];
+
+  return (
+    <div>
+      {/* ヘッダー（PC: fixed全幅, mobile: sticky） */}
+      <div className="sticky sm:fixed top-0 sm:inset-x-0 sm:h-12 z-40 sm:z-50 -mt-8 sm:mt-0 flex items-stretch bg-[var(--bg-surface)] border-b border-gray-200 dark:border-gray-700">
+        <PCHeaderLeft />
+        <div className="flex-1 px-3 py-3 sm:py-0 min-w-0 sm:flex sm:items-center sm:justify-center">
+          <p className="text-sm leading-snug">設定</p>
+        </div>
+        <KebabMenu items={menuItems} />
+      </div>
+
+    <div className="max-w-lg mx-auto space-y-10 pt-6">
       {/* ユーザ情報 */}
       {isLoggedIn && (
         <section>
@@ -285,6 +311,23 @@ export function SettingsPage() {
           ] as const).map((opt) => (
             <label key={opt.value} className={`flex items-start gap-3 px-3 py-2.5 border cursor-pointer transition-colors ${gestureSensitivity === opt.value ? "border-blue-500 dark:border-blue-400 bg-blue-50 dark:bg-blue-950/20" : "border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-white/5"}`}>
               <input type="radio" name="gestureSensitivity" value={opt.value} checked={gestureSensitivity === opt.value} onChange={() => setGestureSensitivity(opt.value)} className="mt-0.5 accent-blue-600" />
+              <div>
+                <p className="text-sm">{opt.label}</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">{opt.desc}</p>
+              </div>
+            </label>
+          ))}
+        </div>
+      </section>
+
+      {/* フォントサイズ */}
+      <section>
+        <SectionHeading>文字サイズ</SectionHeading>
+        <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">スレッド一覧・スレッド表示・ヘッダーに適用されます</p>
+        <div className="space-y-1.5">
+          {fontSizeOptions.map((opt) => (
+            <label key={opt.value} className={`flex items-start gap-3 px-3 py-2.5 border cursor-pointer transition-colors ${fontSize === opt.value ? "border-blue-500 dark:border-blue-400 bg-blue-50 dark:bg-blue-950/20" : "border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-white/5"}`}>
+              <input type="radio" name="fontSize" value={opt.value} checked={fontSize === opt.value} onChange={() => setFontSize(opt.value)} className="mt-0.5 accent-blue-600" />
               <div>
                 <p className="text-sm">{opt.label}</p>
                 <p className="text-xs text-gray-500 dark:text-gray-400">{opt.desc}</p>
@@ -416,6 +459,7 @@ export function SettingsPage() {
           )}
         </form>
       </section>
+    </div>
     </div>
   );
 }

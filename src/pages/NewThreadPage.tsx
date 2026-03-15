@@ -2,18 +2,20 @@ import { useState } from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
 import { boardsApi } from "../api/boards";
 import { useAuth } from "../contexts/AuthContext";
+import { useSettings } from "../contexts/SettingsContext";
 import { Button } from "../components/ui/Button";
 import { ApiRequestError } from "../api/client";
 
 export function NewThreadPage() {
   const { boardId } = useParams<{ boardId: string }>();
   const { turnstileSession, sessionId } = useAuth();
+  const { defaultPosterName, defaultPosterSubInfo } = useSettings();
   const navigate = useNavigate();
 
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [posterName, setPosterName] = useState("");
-  const [posterSubInfo, setPosterSubInfo] = useState("");
+  const [posterName, setPosterName] = useState(defaultPosterName);
+  const [posterSubInfo, setPosterSubInfo] = useState(defaultPosterSubInfo);
   const [showOptions, setShowOptions] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -81,7 +83,7 @@ export function NewThreadPage() {
   };
 
   return (
-    <div className="max-w-2xl space-y-6">
+    <div className="max-w-2xl mx-auto space-y-6">
       <nav className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
         <Link to="/" className="hover:text-gray-900 dark:hover:text-gray-100">トップ</Link>
         <span>/</span>

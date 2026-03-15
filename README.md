@@ -1,73 +1,127 @@
-# React + TypeScript + Vite
+# hono-bbs-webui
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+[hono-bbs](https://github.com/yumekui8/hono-bbs) バックエンド向けの Web フロントエンドです。
+Cloudflare Pages にデプロイする静的サイトとして動作します。
 
-Currently, two official plugins are available:
+## スクリーンショット
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+> 準備中
 
-## React Compiler
+## 特徴
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- スマホ・PC 両対応のレスポンシブデザイン
+- ライト / ダーク / グレー / ライトグレー テーマ対応
+- スワイプジェスチャーによるページ遷移（モバイル）
+- 板・スレッド・投稿の閲覧・書き込み
+- 閲覧履歴・未読管理
+- NG ワード / NG ID フィルター
+- Cloudflare Turnstile による書き込みスパム対策
 
-## Expanding the ESLint configuration
+## 技術スタック
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+| 項目 | 採用技術 |
+|---|---|
+| UI ライブラリ | React 19 |
+| ビルドツール | Vite 7 |
+| スタイリング | Tailwind CSS v4 |
+| ルーティング | React Router v7 |
+| デプロイ | Cloudflare Pages |
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## セットアップ
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### 前提条件
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- Node.js 20 以上
+- [hono-bbs](https://github.com/yumekui8/hono-bbs) バックエンドが起動していること
+
+### インストール
+
+```bash
+git clone https://github.com/yumekui8/hono-bbs-webui.git
+cd hono-bbs-webui
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 環境変数
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+cp .env.example .env.local
 ```
+
+`.env.local` を編集します。
+
+| 変数名 | 説明 | デフォルト |
+|---|---|---|
+| `VITE_API_BASE_URL` | バックエンド API のベース URL | `/api/v1` |
+
+**開発環境での注意**: Vite の開発サーバーはデフォルトで `/api` へのリクエストを `http://localhost:8787` にプロキシします（`vite.config.ts` 参照）。バックエンドをローカルで起動している場合は `VITE_API_BASE_URL=/api/v1` のまま使用できます。
+
+**本番環境**: `VITE_API_BASE_URL` にバックエンドの URL を指定します（例: `https://your-api.workers.dev/api/v1`）。本番用の環境変数は `.env.production` に記載しますが、**リポジトリにはコミットしないでください**。
+
+### 開発サーバーの起動
+
+```bash
+npm run dev
+```
+
+`http://localhost:5173` でアクセスできます。
+
+## ビルド・デプロイ
+
+### ビルド
+
+```bash
+npm run build
+```
+
+`dist/` ディレクトリにビルド成果物が出力されます。
+
+### Cloudflare Pages へのデプロイ
+
+Cloudflare Pages のダッシュボードから Git リポジトリを連携し、以下を設定します。
+
+| 設定項目 | 値 |
+|---|---|
+| ビルドコマンド | `npm run build` |
+| 出力ディレクトリ | `dist` |
+| 環境変数 | `VITE_API_BASE_URL` = バックエンドの URL |
+
+SPA のルーティングのため、`public/_redirects` に以下の内容を配置してください（すでに含まれています）。
+
+```
+/* /index.html 200
+```
+
+## 開発コマンド
+
+```bash
+npm run dev      # 開発サーバー起動（HMR あり）
+npm run build    # 本番ビルド（TypeScript チェック込み）
+npm run preview  # ビルド成果物のプレビュー
+npm run lint     # ESLint によるコードチェック
+```
+
+## プロジェクト構成
+
+```
+src/
+  api/              # APIクライアント（boards, auth）
+  components/
+    layout/         # レイアウト（Header, Layout, Sidebar）
+    ui/             # 共通UIコンポーネント
+  contexts/         # React Context（Auth, Theme, Settings, Layout）
+  hooks/            # カスタムフック（スワイプジェスチャーなど）
+  pages/            # ページコンポーネント
+  types/            # API レスポンスの型定義
+  utils/            # ユーティリティ（履歴管理, NG フィルター等）
+docs/
+  endpoints/        # バックエンド API 仕様（Markdown）
+```
+
+## 関連リポジトリ
+
+- **バックエンド**: [yumekui8/hono-bbs](https://github.com/yumekui8/hono-bbs) — Hono + Cloudflare Workers + D1
+
+## ライセンス
+
+MIT License — 詳細は [LICENSE](./LICENSE) を参照してください。

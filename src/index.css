@@ -23,6 +23,15 @@
   --bg-surface: #374151;    /* gray-700 */
   --bg-page:    #1f2937;    /* gray-800 */
   --link-color: #bae6fd;    /* sky-200 */
+  --border-list: #4b5563;   /* gray-600: リスト境界線 */
+}
+
+/* light / light-gray の境界線（デフォルト） */
+:root {
+  --border-list: #e5e7eb;   /* gray-200 */
+}
+.dark {
+  --border-list: #1f2937;   /* gray-900 */
 }
 
 /* light-gray */
@@ -30,4 +39,12 @@
   --bg-surface: #f3f4f6;    /* gray-100 */
   --bg-page:    #e5e7eb;    /* gray-200 */
   --link-color: #1d4ed8;    /* blue-700 */
+}
+
+/* グレーテーマ用リスト境界線 */
+.gray-list {
+  border-color: var(--border-list) !important;
+}
+.gray-list > * + * {
+  border-top-color: var(--border-list) !important;
 }

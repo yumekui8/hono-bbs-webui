@@ -16,6 +16,7 @@ import { useTheme, isDarkTheme } from "../contexts/ThemeContext";
 import { useSwipeGesture } from "../hooks/useSwipeGesture";
 import { useLayout } from "../contexts/LayoutContext";
 import { loadDraft, saveDraft, clearDraft } from "../utils/draftCache";
+import { PCHeaderLeft } from "../components/layout/PCHeaderLeft";
 
 // ============================================================
 // Types
@@ -887,6 +888,11 @@ export function ThreadPage() {
   const load = useCallback(async (preserveScroll = false) => {
     if (!boardId || !threadId) return;
     const savedScroll = preserveScroll ? window.scrollY : 0;
+    // 更新ボタン押下時: 現在の既読位置を「ここまで読んだ」の起点にリセット
+    if (preserveScroll) {
+      const current = getHistoryEntry(boardId, threadId);
+      if (current) prevHistoryEntry.current = current;
+    }
     setLoading(true);
     setError(null);
     try {
@@ -1060,13 +1066,16 @@ export function ThreadPage() {
       {...pageSwipe.handlers}
       style={{ minHeight: "90vh" }}
     >
-      {/* Sticky thread title subheader */}
+      {/* ヘッダー（PC: fixed全幅, mobile: sticky） */}
       <div
         ref={stickyHeaderRef}
-        className="sticky top-0 z-40 -mt-8 sm:-mx-4 flex items-stretch bg-[var(--bg-surface)] border-b border-gray-200 dark:border-gray-700 cursor-pointer"
+        className="sticky sm:fixed top-0 sm:inset-x-0 sm:h-12 z-40 sm:z-50 -mt-8 sm:mt-0 flex items-stretch bg-[var(--bg-surface)] border-b border-gray-200 dark:border-gray-700 cursor-pointer"
         onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
       >
-        <div className="flex-1 px-3 sm:px-4 py-3 min-w-0">
+        <div onClick={(e) => e.stopPropagation()} className="flex items-stretch">
+          <PCHeaderLeft />
+        </div>
+        <div className="flex-1 px-3 py-3 sm:py-0 min-w-0 sm:flex sm:items-center sm:justify-center">
           <div className="flex items-baseline gap-2">
             <p className="text-sm leading-snug">{thread?.title ?? "..."}</p>
             {thread && <span className="text-xs text-gray-400 dark:text-gray-500 shrink-0">{thread.postCount} レス</span>}

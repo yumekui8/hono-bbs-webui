@@ -13,6 +13,7 @@ import { isNGThread } from "../utils/ngFilter";
 import { useTheme, isDarkTheme } from "../contexts/ThemeContext";
 import { saveThreadCache, loadThreadCache } from "../utils/threadCache";
 import { useSwipeGesture } from "../hooks/useSwipeGesture";
+import { PCHeaderLeft } from "../components/layout/PCHeaderLeft";
 
 const FOOTER_H = 56;
 
@@ -174,17 +175,14 @@ export function ThreadListPage() {
 
   return (
     <div {...listSwipe.handlers} style={{ minHeight: "90vh" }}>
-      {/* スティッキーサブヘッダー */}
-      <div className="sticky top-0 z-40 -mt-8 sm:-mx-4 flex items-stretch bg-[var(--bg-surface)] border-b border-gray-200 dark:border-gray-700">
-        <div className="flex-1 px-3 sm:px-4 py-3 min-w-0">
+      {/* ヘッダー（PC: fixed全幅, mobile: sticky） */}
+      <div className="sticky sm:fixed top-0 sm:inset-x-0 sm:h-12 z-40 sm:z-50 -mt-8 sm:mt-0 flex items-stretch bg-[var(--bg-surface)] border-b border-gray-200 dark:border-gray-700">
+        <PCHeaderLeft />
+        <div className="flex-1 px-3 py-3 sm:py-0 min-w-0 sm:flex sm:items-center sm:justify-center">
           <p className="text-sm leading-snug">{board?.name ?? boardId}</p>
         </div>
         <KebabMenu items={menuItems} />
       </div>
-
-      {board?.description && (
-        <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">{board.description}</p>
-      )}
 
       {loading && <Loading />}
       {error && <ErrorMessage message={error} onRetry={load} />}
@@ -195,7 +193,7 @@ export function ThreadListPage() {
       )}
       {!loading && !error && displayThreads.length > 0 && (
         <div
-          className="border border-gray-200 dark:border-gray-800 divide-y divide-gray-100 dark:divide-gray-800"
+          className="border border-gray-200 dark:border-gray-800 divide-y divide-gray-100 dark:divide-gray-800 gray-list"
           style={{ marginBottom: FOOTER_H }}
         >
           {displayThreads.map(({ thread, entry, visited, unread, momentum }) => (

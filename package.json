@@ -1,7 +1,13 @@
 {
   "name": "hono-bbs-webui",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.2.0-beta",
+  "description": "Web frontend for hono-bbs — an anonymous BBS running on Cloudflare Workers",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yumekui8/hono-bbs-webui.git"
+  },
   "type": "module",
   "scripts": {
     "dev": "vite",
